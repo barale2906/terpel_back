@@ -58,11 +58,10 @@ class OrderControllerIntegrationTest {
     private TestRestTemplate restTemplate;
 
     private ResponseEntity<OrderResponse> createOrder(String stationId, OrderType type,
-                                                       OrderStatus status, String description) {
+                                                       String description) {
         CreateOrderRequest request = CreateOrderRequest.builder()
                 .stationId(stationId)
                 .type(type)
-                .status(status)
                 .description(description)
                 .build();
         return restTemplate.postForEntity("/service-orders", request, OrderResponse.class);
@@ -83,7 +82,7 @@ class OrderControllerIntegrationTest {
     @DisplayName("POST /service-orders → 201 Created con body correcto")
     void post_validOrder_shouldReturn201() {
         ResponseEntity<OrderResponse> response = createOrder(
-                "ST-INT-001", OrderType.INVOICE, OrderStatus.CREATED, "Factura de integracion");
+                "ST-INT-001", OrderType.INVOICE, "Factura de integracion");
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
 
@@ -100,7 +99,7 @@ class OrderControllerIntegrationTest {
 
     /*
      * Que se busca: Verificar que si se intenta crear una orden sin los campos
-     *               obligatorios (stationId, type, status), la API rechaza la
+     *               obligatorios (stationId, type), la API rechaza la
      *               peticion con codigo 400 (error de validacion).
      * Resultado esperado: Codigo HTTP 400 Bad Request, indicando que faltan datos.
      */
@@ -132,7 +131,7 @@ class OrderControllerIntegrationTest {
     @DisplayName("GET /service-orders/{id} existente → 200")
     void get_existingId_shouldReturn200() {
         ResponseEntity<OrderResponse> created = createOrder(
-                "ST-INT-002", OrderType.SUPPORT, OrderStatus.CREATED, null);
+                "ST-INT-002", OrderType.SUPPORT, null);
         UUID id = created.getBody().getId();
 
         ResponseEntity<OrderResponse> response = restTemplate.getForEntity(
@@ -176,9 +175,9 @@ class OrderControllerIntegrationTest {
     @Order(5)
     @DisplayName("GET /service-orders?stationId=X → resultados filtrados")
     void get_filterByStationId_shouldReturnFiltered() {
-        createOrder("ST-FILTER-A", OrderType.INVOICE, OrderStatus.CREATED, null);
-        createOrder("ST-FILTER-A", OrderType.SUPPORT, OrderStatus.CREATED, null);
-        createOrder("ST-FILTER-B", OrderType.REDEMPTION, OrderStatus.CREATED, null);
+        createOrder("ST-FILTER-A", OrderType.INVOICE, null);
+        createOrder("ST-FILTER-A", OrderType.SUPPORT, null);
+        createOrder("ST-FILTER-B", OrderType.REDEMPTION, null);
 
         ResponseEntity<Map> response = restTemplate.getForEntity(
                 "/service-orders?stationId=ST-FILTER-A&page=0&size=10", Map.class);
@@ -201,7 +200,7 @@ class OrderControllerIntegrationTest {
     @Order(6)
     @DisplayName("GET /service-orders?stationId=X&status=Y → resultados con ambos filtros")
     void get_filterByStationIdAndStatus_shouldReturnFiltered() {
-        createOrder("ST-DUAL", OrderType.INVOICE, OrderStatus.CREATED, null);
+        createOrder("ST-DUAL", OrderType.INVOICE, null);
 
         ResponseEntity<Map> response = restTemplate.getForEntity(
                 "/service-orders?stationId=ST-DUAL&status=CREATED&page=0&size=10", Map.class);
@@ -227,7 +226,7 @@ class OrderControllerIntegrationTest {
     @DisplayName("PATCH transicion valida CREATED → IN_PROGRESS → 200")
     void patch_validTransition_shouldReturn200() {
         ResponseEntity<OrderResponse> created = createOrder(
-                "ST-PATCH-OK", OrderType.INVOICE, OrderStatus.CREATED, null);
+                "ST-PATCH-OK", OrderType.INVOICE, null);
         UUID id = created.getBody().getId();
 
         UpdateStatusRequest patchRequest = UpdateStatusRequest.builder()
@@ -257,7 +256,7 @@ class OrderControllerIntegrationTest {
     @DisplayName("PATCH transicion invalida DONE → IN_PROGRESS → 409 Conflict")
     void patch_invalidTransition_shouldReturn409() {
         ResponseEntity<OrderResponse> created = createOrder(
-                "ST-PATCH-FAIL", OrderType.SUPPORT, OrderStatus.CREATED, null);
+                "ST-PATCH-FAIL", OrderType.SUPPORT, null);
         UUID id = created.getBody().getId();
 
         UpdateStatusRequest toDone = UpdateStatusRequest.builder().status(OrderStatus.DONE).build();
@@ -289,7 +288,7 @@ class OrderControllerIntegrationTest {
     @DisplayName("PATCH sobre orden CANCELLED → 409 Conflict")
     void patch_cancelledOrder_shouldReturn409() {
         ResponseEntity<OrderResponse> created = createOrder(
-                "ST-PATCH-CANCEL", OrderType.REDEMPTION, OrderStatus.CREATED, null);
+                "ST-PATCH-CANCEL", OrderType.REDEMPTION, null);
         UUID id = created.getBody().getId();
 
         UpdateStatusRequest toCancel = UpdateStatusRequest.builder()

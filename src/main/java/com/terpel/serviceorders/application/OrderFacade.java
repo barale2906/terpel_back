@@ -43,7 +43,7 @@ public class OrderFacade {
      * Crea una nueva orden de servicio a partir del DTO de entrada.
      * Extrae los campos del request y delega la creacion al servicio de dominio.
      *
-     * @param request DTO con stationId, type, status y description (opcional)
+     * @param request DTO con stationId, type y description (opcional)
      * @return DTO de respuesta con la orden creada (incluye id y timestamps)
      */
     public OrderResponse createOrder(CreateOrderRequest request) {

@@ -84,7 +84,6 @@ class OrderFacadeTest {
         CreateOrderRequest request = CreateOrderRequest.builder()
                 .stationId("ST-001")
                 .type(OrderType.INVOICE)
-                .status(OrderStatus.CREATED)
                 .description("Factura test")
                 .build();
 

@@ -55,12 +55,12 @@ public class OrderController {
      * Registra una nueva orden de servicio.
      * Los campos id, createdAt y updatedAt se autogeneran.
      *
-     * @param request DTO con stationId, type, status (obligatorios) y description (opcional)
+     * @param request DTO con stationId, type (obligatorios) y description (opcional)
      * @return 201 Created con la orden creada
      */
     @PostMapping
     @Operation(summary = "Crear orden de servicio",
-            description = "Registra una nueva orden. Los campos id, createdAt y updatedAt se autogeneran.")
+            description = "Registra una nueva orden con estado CREATED. Los campos id, createdAt y updatedAt se autogeneran.")
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "Orden creada exitosamente",
                     content = @Content(schema = @Schema(implementation = OrderResponse.class))),

@@ -123,7 +123,6 @@ Crea una nueva orden. Los campos `id`, `createdAt` y `updatedAt` se generan auto
 {
   "stationId": "ST-001",
   "type": "INVOICE",
-  "status": "CREATED",
   "description": "Factura de combustible diesel"
 }
 ```
@@ -132,8 +131,9 @@ Crea una nueva orden. Los campos `id`, `createdAt` y `updatedAt` se generan auto
 |---|---|---|
 | `stationId` | Si | Cualquier texto (ej: "ST-001") |
 | `type` | Si | `INVOICE`, `SUPPORT`, `REDEMPTION` |
-| `status` | Si | `CREATED`, `IN_PROGRESS`, `DONE`, `CANCELLED` |
 | `description` | No | Texto libre o se omite |
+
+El estado inicial de la orden siempre es `CREATED` (lo asigna el servidor). Para otro estado use el endpoint PATCH de actualizacion.
 
 **Respuesta exitosa (201 Created):**
 
@@ -154,7 +154,7 @@ Crea una nueva orden. Los campos `id`, `createdAt` y `updatedAt` se generan auto
 | Codigo | Cuando ocurre | Ejemplo |
 |---|---|---|
 | 400 | Faltan campos obligatorios | Enviar sin `stationId` |
-| 400 | Tipo o estado invalido | Enviar `type: "OTRO"` |
+| 400 | Tipo invalido | Enviar `type: "OTRO"` |
 
 **Ejemplo con curl:**
 
@@ -164,7 +164,6 @@ curl -X POST http://localhost:8080/service-orders \
   -d '{
     "stationId": "ST-001",
     "type": "INVOICE",
-    "status": "CREATED",
     "description": "Factura de combustible"
   }'
 ```
@@ -435,7 +434,6 @@ curl -X POST http://localhost:8080/service-orders \
   -d '{
     "stationId": "ST-BOGOTA-01",
     "type": "SUPPORT",
-    "status": "CREATED",
     "description": "Revision del dispensador #3"
   }'
 ```

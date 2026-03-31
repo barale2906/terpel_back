@@ -192,6 +192,8 @@ terpel_back/
 │   │       ├── application-docker.yml
 │   │       └── db/migration/       ← Scripts Flyway
 │   └── test/                       ← Tests unitarios e integracion
+├── docs/                           ← OpenAPI exportado, guia SPA, analisis, plan
+├── manuales/                       ← Manual de instalacion y manual de usuario (fuente para la SPA por URL al repo)
 ├── docker-compose.yml              ← Orquestacion de servicios
 ├── Makefile                        ← Atajos de comandos
 ├── pom.xml                         ← Dependencias Maven
@@ -249,15 +251,18 @@ make restart
 
 ## 9. Importar API en Postman
 
-1. Con la aplicacion corriendo, descargar el JSON:
+1. **Opcion A — Desde el repo (misma especificacion versionada en Git):** descargar o importar por URL el archivo publicado en el backend, por ejemplo (rama `main`):
+
+   `https://raw.githubusercontent.com/barale2906/terpel_back/main/docs/openapi.json`
+
+2. **Opcion B — Desde tu instancia local en ejecucion:** generar el JSON vivo desde Springdoc:
    ```bash
    curl http://localhost:8080/v3/api-docs -o docs/openapi.json
    ```
-   (Ya esta incluido en `docs/openapi.json`)
 
-2. Abrir Postman → **Import** → seleccionar `docs/openapi.json`
+3. Abrir Postman → **Import** → archivo local o *Link* pegando la URL raw del paso 1.
 
-3. Se crea automaticamente una coleccion con los 4 endpoints listos para usar.
+4. Se crea automaticamente una coleccion con los 4 endpoints listos para usar.
 
 ---
 
